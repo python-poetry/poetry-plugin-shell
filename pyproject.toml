@@ -1,0 +1,114 @@
+[tool.poetry]
+name = "poetry-plugin-shell"
+version = "1.0.0"
+description = "Poetry plugin to run subshell with virtual environment activated"
+authors = ["Sébastien Eustace <sebastien@eustace.io>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://python-poetry.org/"
+repository = "https://github.com/python-poetry/poetry-plugin-shell"
+
+packages = [
+    { include = "poetry_plugin_shell", from = "src" }
+]
+
+include = [
+    { path = "tests", format = "sdist" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+poetry = ">=1.8.0,<3.0.0"
+pexpect = "^4.7.0"
+shellingham = "^1.5"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = ">=2.18"
+pytest = "^8.0"
+pytest-cov = "^4.0"
+pytest-mock = "^3.9"
+pytest-randomly = "^3.12"
+pytest-xdist = { version = "^3.1", extras = ["psutil"] }
+mypy = ">=1.0.0"
+
+# only used in github actions
+[tool.poetry.group.github-actions]
+optional = true
+[tool.poetry.group.github-actions.dependencies]
+pytest-github-actions-annotate-failures = "^0.1.7"
+
+[tool.poetry.plugins."poetry.application.plugin"]
+shell = "poetry_plugin_shell.plugins:ShellApplicationPlugin"
+
+
+[tool.ruff]
+fix = true
+unsafe-fixes = true
+target-version = "py38"
+line-length = 88
+extend-exclude = [
+    "docs/*",
+]
+
+[tool.ruff.lint]
+unfixable = [
+    "ERA", # do not autoremove commented out code
+]
+extend-select = [
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "ERA", # flake8-eradicate/eradicate
+    "I",   # isort
+    "N",   # pep8-naming
+    "PIE", # flake8-pie
+    "PGH", # pygrep
+    "RUF", # ruff checks
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+    "UP",  # pyupgrade
+]
+ignore = [
+    "B904", # use 'raise ... from err'
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-between-types = 1
+lines-after-imports = 2
+known-first-party = ["poetry_plugin_shell"]
+required-imports = ["from __future__ import annotations"]
+
+
+[tool.mypy]
+namespace_packages = true
+show_error_codes = true
+enable_error_code = [
+    "ignore-without-code",
+    "redundant-expr",
+    "truthy-bool",
+]
+strict = true
+files = ["src", "tests"]
+
+
+[[tool.mypy.overrides]]
+module = [
+    'pexpect.*',
+    'shellingham.*',
+]
+ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+addopts = "-n auto"
+testpaths = [
+    "tests"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
