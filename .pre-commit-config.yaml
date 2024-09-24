@@ -22,12 +22,12 @@ repos:
       - id: check-docstring-first
 
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v3.7.1
+    rev: v3.8.0
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.4
+    rev: v0.6.7
     hooks:
       - id: ruff
       - id: ruff-format
