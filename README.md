@@ -2,6 +2,9 @@
 
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 
+> [!NOTE]
+> We are looking for maintainers, see the [issue](https://github.com/python-poetry/poetry-plugin-shell/issues/3).
+
 This package is a plugin that runs a subshell with virtual environment activated.
 
 
