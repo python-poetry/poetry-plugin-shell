@@ -47,5 +47,5 @@ Note that this command starts a new shell and activates the virtual environment.
 
 As such, `exit` should be used to properly exit the shell and the virtual environment instead of `deactivate`.
 
-> ![NOTE]
+> [!NOTE]
 > This plugin internally uses the [Shellingham](https://github.com/sarugaku/shellingham) project to detect current active shell.

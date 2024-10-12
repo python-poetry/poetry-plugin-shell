@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 
+from cleo.io.null_io import NullIO
 from cleo.testers.command_tester import CommandTester
 from poetry.config.config import Config as BaseConfig
 from poetry.config.dict_config_source import DictConfigSource
@@ -179,15 +180,10 @@ def project_factory(
 
         poetry = Factory().create_poetry(project_dir)
 
-        try:
-            # with https://github.com/python-poetry/poetry/pull/9133
-            locker = TestLocker(
-                poetry.locker.lock,
-                poetry.locker._pyproject_data,  # type: ignore[attr-defined]
-            )
-        except AttributeError:
-            # before https://github.com/python-poetry/poetry/pull/9133
-            locker = TestLocker(poetry.locker.lock, poetry.locker._local_config)
+        locker = TestLocker(
+            poetry.locker.lock,
+            poetry.locker._pyproject_data,
+        )
         locker.write()
 
         poetry.set_locker(locker)
@@ -221,11 +217,10 @@ def command_tester_factory(
         executor: Executor | None = None,
         environment: Env | None = None,
     ) -> CommandTester:
+        app._load_plugins(NullIO())
+
         command_obj = app.find(command)
         tester = CommandTester(command_obj)
-
-        print(id(tester.command))
-        print(tester.command.name)
 
         # Setting the formatter from the application
         # TODO: Find a better way to do this in Cleo

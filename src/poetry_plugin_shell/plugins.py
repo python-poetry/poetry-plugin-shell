@@ -19,10 +19,8 @@ class ShellApplicationPlugin(ApplicationPlugin):
 
     def activate(self, application: Application) -> None:
         # Removing the existing shell command to avoid an error
-
         # If you're checking this code out to get inspiration
         # for your own plugins: DON'T DO THIS!
         if application.command_loader.has("shell"):
             del application.command_loader._factories["shell"]
-
         super().activate(application=application)
