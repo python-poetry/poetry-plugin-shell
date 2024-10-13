@@ -17,8 +17,8 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-poetry = ">=1.8.0,<3.0.0"
+python = "^3.9"
+poetry = { git = "https://github.com/Secrus/poetry.git", branch = "remove-shell" }
 pexpect = "^4.7.0"
 shellingham = "^1.5"
 
@@ -44,7 +44,7 @@ shell = "poetry_plugin_shell.plugins:ShellApplicationPlugin"
 [tool.ruff]
 fix = true
 unsafe-fixes = true
-target-version = "py38"
+target-version = "py39"
 line-length = 88
 extend-exclude = [
     "docs/*",

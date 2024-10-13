@@ -26,7 +26,7 @@ If a virtual environment does not exist, it will be created.
 """
 
     def handle(self) -> int:
-        from poetry.utils.shell import Shell
+        from poetry_plugin_shell.shell import Shell
 
         # Check if it's already activated or doesn't exist and won't be created
         if self._is_venv_activated():

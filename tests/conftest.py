@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 
 from pathlib import Path
@@ -8,6 +9,7 @@ from typing import Any
 
 import pytest
 
+from cleo.io.null_io import NullIO
 from cleo.testers.command_tester import CommandTester
 from poetry.config.config import Config as BaseConfig
 from poetry.config.dict_config_source import DictConfigSource
@@ -23,9 +25,12 @@ from poetry.utils.env import SystemEnv
 from tests.helpers import PoetryTestApplication
 from tests.helpers import TestExecutor
 from tests.helpers import TestLocker
+from tests.helpers import isolated_environment
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from poetry.installation.executor import Executor
     from poetry.poetry import Poetry
     from poetry.utils.env import Env
@@ -99,6 +104,17 @@ def config(
     mocker.patch("poetry.config.config.Config.set_config_source")
 
     return c
+
+
+@pytest.fixture(autouse=True)
+def isolate_environ() -> Iterator[None]:
+    """Ensure the environment is isolated from user configuration."""
+    with isolated_environment():
+        for var in os.environ:
+            if var.startswith("POETRY_") or var in {"PYTHONPATH", "VIRTUAL_ENV"}:
+                del os.environ[var]
+
+        yield
 
 
 @pytest.fixture
@@ -179,15 +195,10 @@ def project_factory(
 
         poetry = Factory().create_poetry(project_dir)
 
-        try:
-            # with https://github.com/python-poetry/poetry/pull/9133
-            locker = TestLocker(
-                poetry.locker.lock,
-                poetry.locker._pyproject_data,  # type: ignore[attr-defined]
-            )
-        except AttributeError:
-            # before https://github.com/python-poetry/poetry/pull/9133
-            locker = TestLocker(poetry.locker.lock, poetry.locker._local_config)
+        locker = TestLocker(
+            poetry.locker.lock,
+            poetry.locker._pyproject_data,
+        )
         locker.write()
 
         poetry.set_locker(locker)
@@ -221,11 +232,10 @@ def command_tester_factory(
         executor: Executor | None = None,
         environment: Env | None = None,
     ) -> CommandTester:
+        app._load_plugins(NullIO())
+
         command_obj = app.find(command)
         tester = CommandTester(command_obj)
-
-        print(id(tester.command))
-        print(tester.command.name)
 
         # Setting the formatter from the application
         # TODO: Find a better way to do this in Cleo

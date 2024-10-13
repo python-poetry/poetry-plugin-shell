@@ -23,11 +23,9 @@ def tester(command_tester_factory: CommandTesterFactory) -> CommandTester:
 
 
 def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
-    print(tester.command.name)
     shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
 
     tester.execute()
-    print(id(tester.command))
     assert isinstance(tester.command, ShellCommand)
     expected_output = f"Spawning shell within {tester.command.env.path}\n"
 
@@ -37,13 +35,11 @@ def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
 
 
 def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> None:
-    print(tester.command.name)
     os.environ["POETRY_ACTIVE"] = "1"
     shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
 
     tester.execute()
 
-    print(id(tester.command))
     assert isinstance(tester.command, ShellCommand)
     expected_output = (
         f"Virtual environment already activated: {tester.command.env.path}\n"
@@ -79,7 +75,6 @@ def test__is_venv_activated(
     prefix: str,
     expected: bool,
 ) -> None:
-    print(tester.command.name)
     assert isinstance(tester.command, ShellCommand)
     mocker.patch.object(tester.command.env, "_path", Path("foobar"))
     mocker.patch("sys.prefix", prefix)
