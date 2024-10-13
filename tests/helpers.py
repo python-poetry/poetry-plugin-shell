@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import contextlib
+import os
+
 from typing import TYPE_CHECKING
 
 from poetry.console.application import Application
@@ -9,6 +12,7 @@ from poetry.packages import Locker
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from pathlib import Path
     from typing import Any
 
@@ -107,3 +111,21 @@ class TestLocker(Locker):
             return
 
         self._lock_data = data
+
+
+@contextlib.contextmanager
+def isolated_environment(
+    environ: dict[str, Any] | None = None, clear: bool = False
+) -> Iterator[None]:
+    original_environ = dict(os.environ)
+
+    if clear:
+        os.environ.clear()
+
+    if environ:
+        os.environ.update(environ)
+
+    yield
+
+    os.environ.clear()
+    os.environ.update(original_environ)
