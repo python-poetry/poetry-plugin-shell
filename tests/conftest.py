@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 
 from pathlib import Path
@@ -24,9 +25,12 @@ from poetry.utils.env import SystemEnv
 from tests.helpers import PoetryTestApplication
 from tests.helpers import TestExecutor
 from tests.helpers import TestLocker
+from tests.helpers import isolated_environment
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from poetry.installation.executor import Executor
     from poetry.poetry import Poetry
     from poetry.utils.env import Env
@@ -100,6 +104,17 @@ def config(
     mocker.patch("poetry.config.config.Config.set_config_source")
 
     return c
+
+
+@pytest.fixture(autouse=True)
+def isolate_environ() -> Iterator[None]:
+    """Ensure the environment is isolated from user configuration."""
+    with isolated_environment():
+        for var in os.environ:
+            if var.startswith("POETRY_") or var in {"PYTHONPATH", "VIRTUAL_ENV"}:
+                del os.environ[var]
+
+        yield
 
 
 @pytest.fixture

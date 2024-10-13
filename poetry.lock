@@ -1003,7 +1003,7 @@ xattr = {version = "^1.0.0", markers = "sys_platform == \"darwin\""}
 type = "git"
 url = "https://github.com/Secrus/poetry.git"
 reference = "remove-shell"
-resolved_reference = "59612d9501d2ad430020c54bb629cb6c73335f07"
+resolved_reference = "d7694ed88f69aa3e5b93c6492f3cb3e25654efb8"
 
 [[package]]
 name = "poetry-core"
