@@ -18,7 +18,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-poetry = { git = "https://github.com/Secrus/poetry.git", branch = "remove-shell" }
+poetry = ">=1.8.0,<3.0.0"
 pexpect = "^4.7.0"
 shellingham = "^1.5"
 
