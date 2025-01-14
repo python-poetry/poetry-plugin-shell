@@ -90,7 +90,9 @@ def test__is_venv_activated(
 
 def test_is_not_venv(tester: CommandTester, mocker: MockerFixture) -> None:
     shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
-    tester.command.env.is_venv = lambda: False
+
+    assert isinstance(tester.command, ShellCommand)
+    mocker.patch.object(tester.command.env, "is_venv", new=lambda: False)
 
     tester.execute()
     assert isinstance(tester.command, ShellCommand)
