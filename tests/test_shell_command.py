@@ -86,3 +86,20 @@ def test__is_venv_activated(
         os.environ["POETRY_ACTIVE"] = poetry_active
 
     assert tester.command._is_venv_activated() is expected
+
+
+def test_is_not_venv(tester: CommandTester, mocker: MockerFixture) -> None:
+    shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
+
+    assert isinstance(tester.command, ShellCommand)
+    mocker.patch.object(tester.command.env, "is_venv", new=lambda: False)
+
+    tester.execute()
+    expected_output = (
+        f"The Python environment at {tester.command.env.path} "
+        "cannot be activated as it is not a virtural environment.\n"
+    )
+
+    shell_activate.assert_not_called()
+    assert tester.io.fetch_error() == expected_output
+    assert tester.status_code == 1
