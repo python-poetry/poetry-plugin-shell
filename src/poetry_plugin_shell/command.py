@@ -20,7 +20,7 @@ class ShellCommand(EnvCommand):
     help = f"""The <info>shell</> command spawns a shell within the project's virtual environment.
 
 By default, the current active shell is detected and used. Failing that,
-the shell defined via the environment variable <comment>{'COMSPEC' if os.name == 'nt' else 'SHELL'}</> is used.
+the shell defined via the environment variable <comment>{"COMSPEC" if os.name == "nt" else "SHELL"}</> is used.
 
 If a virtual environment does not exist, it will be created.
 """
