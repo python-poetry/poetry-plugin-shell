@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from typing import cast
 
 from poetry.console.commands.env_command import EnvCommand
-from poetry.console.exceptions import PoetryConsoleError
 
 
 if TYPE_CHECKING:
@@ -42,8 +41,12 @@ If a virtual environment does not exist, it will be created.
         # Be sure that we have the right type of environment.
         env = self.env
         if not env.is_venv():
-            error_msg = "Virtual environment cannot be activated"
-            raise PoetryConsoleError(error_msg)
+            self.line("")
+            self.line_error(
+                f"The Python environment at <info>{env.path}</> "
+                "cannot be activated as it is not a virtural environment."
+            )
+            return 1
         env = cast("VirtualEnv", env)
 
         # Setting this to avoid spawning unnecessary nested shells
