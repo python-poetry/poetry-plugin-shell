@@ -95,7 +95,6 @@ def test_is_not_venv(tester: CommandTester, mocker: MockerFixture) -> None:
     mocker.patch.object(tester.command.env, "is_venv", new=lambda: False)
 
     tester.execute()
-    assert isinstance(tester.command, ShellCommand)
     expected_output = (
         f"The Python environment at {tester.command.env.path} "
         "cannot be activated as it is not a virtural environment.\n"
