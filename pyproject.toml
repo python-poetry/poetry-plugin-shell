@@ -30,6 +30,7 @@ pytest-mock = "^3.9"
 pytest-randomly = "^3.12"
 pytest-xdist = { version = "^3.1", extras = ["psutil"] }
 mypy = ">=1.0.0"
+keyring = "*"
 
 # only used in github actions
 [tool.poetry.group.github-actions]
