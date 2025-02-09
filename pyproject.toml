@@ -1,26 +1,32 @@
-[tool.poetry]
+[project]
 name = "poetry-plugin-shell"
 version = "1.0.1"
 description = "Poetry plugin to run subshell with virtual environment activated"
-authors = ["Sébastien Eustace <sebastien@eustace.io>"]
-license = "MIT"
+authors = [{ name = "Sébastien Eustace", email = "sebastien@eustace.io" }]
+license = { text = "MIT" }
 readme = "README.md"
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "poetry (>=2.0,<3.0)",
+    "pexpect (>=4.7.0,<5.0.0)",
+    "shellingham (>=1.5,<2.0)",
+]
+dynamic = ["classifiers"]
+
+[project.urls]
 homepage = "https://python-poetry.org/"
 repository = "https://github.com/python-poetry/poetry-plugin-shell"
 
+[project.entry-points."poetry.application.plugin"]
+shell = "poetry_plugin_shell.plugins:ShellApplicationPlugin"
+
+[tool.poetry]
 packages = [
     { include = "poetry_plugin_shell", from = "src" }
 ]
-
 include = [
     { path = "tests", format = "sdist" }
 ]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-poetry = "^2.0"
-pexpect = "^4.7.0"
-shellingham = "^1.5"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = ">=2.18"
@@ -36,10 +42,6 @@ mypy = ">=1.0.0"
 optional = true
 [tool.poetry.group.github-actions.dependencies]
 pytest-github-actions-annotate-failures = "^0.1.7"
-
-[tool.poetry.plugins."poetry.application.plugin"]
-shell = "poetry_plugin_shell.plugins:ShellApplicationPlugin"
-
 
 [tool.ruff]
 fix = true
@@ -110,5 +112,5 @@ testpaths = [
 ]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
