@@ -5,7 +5,7 @@ description = "Poetry plugin to run subshell with virtual environment activated"
 authors = [{ name = "Sébastien Eustace", email = "sebastien@eustace.io" }]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "poetry (>=2.0,<3.0)",
     "pexpect (>=4.7.0,<5.0.0)",
@@ -46,7 +46,6 @@ pytest-github-actions-annotate-failures = "^0.1.7"
 [tool.ruff]
 fix = true
 unsafe-fixes = true
-target-version = "py39"
 line-length = 88
 extend-exclude = [
     "docs/*",
