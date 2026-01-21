@@ -40,7 +40,13 @@ If a virtual environment does not exist, it will be created.
 
         # Be sure that we have the right type of environment.
         env = self.env
-        assert env.is_venv()
+        if not env.is_venv():
+            self.line("")
+            self.line_error(
+                f"The Python environment at <info>{env.path}</> "
+                "cannot be activated as it is not a virtural environment."
+            )
+            return 1
         env = cast("VirtualEnv", env)
 
         # Setting this to avoid spawning unnecessary nested shells
