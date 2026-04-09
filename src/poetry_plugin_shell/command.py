@@ -34,6 +34,13 @@ If a virtual environment does not exist, it will be created.
                 f"Virtual environment already activated: <info>{self.env.path}</>"
             )
 
+            # Activate the shell.
+            env = self.env
+            assert env.is_venv()
+            env = cast("VirtualEnv", env)
+            shell = Shell.get()
+            shell.activate(env)
+
             return 0
 
         self.line(f"Spawning shell within <info>{self.env.path}</>")
