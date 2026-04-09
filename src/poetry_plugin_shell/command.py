@@ -28,6 +28,9 @@ If a virtual environment does not exist, it will be created.
     def handle(self) -> int:
         from poetry_plugin_shell.shell import Shell
 
+        if os.environ.get("POETRY_ACTIVE") == "1" and not os.environ.get("VIRTUAL_ENV"):
+            os.environ.pop("POETRY_ACTIVE")
+
         # Check if it's already activated or doesn't exist and won't be created
         if self._is_venv_activated():
             self.line(
@@ -52,10 +55,6 @@ If a virtual environment does not exist, it will be created.
         return 0
 
     def _is_venv_activated(self) -> bool:
-        if os.environ.get("POETRY_ACTIVE") and not os.environ.get("VIRTUAL_ENV"):
-            os.environ.pop("POETRY_ACTIVE")
-            return False
-
         return bool(os.environ.get("POETRY_ACTIVE")) or getattr(
             sys, "real_prefix", sys.prefix
         ) == str(self.env.path)
