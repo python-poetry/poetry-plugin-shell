@@ -35,7 +35,7 @@ If a virtual environment does not exist, it will be created.
             )
 
             # Only activate if not already inside a Poetry-spawned shell (avoid nesting).
-            if not os.environ.get("POETRY_ACTIVE"):
+            if os.environ.get("POETRY_ACTIVE") == "1":
                 env = self.env
                 assert env.is_venv()
                 env = cast("VirtualEnv", env)
