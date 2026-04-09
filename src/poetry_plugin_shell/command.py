@@ -34,6 +34,14 @@ If a virtual environment does not exist, it will be created.
                 f"Virtual environment already activated: <info>{self.env.path}</>"
             )
 
+            # Only activate if not already inside a Poetry-spawned shell (avoid nesting).
+            if not os.environ.get("POETRY_ACTIVE"):
+                env = self.env
+                assert env.is_venv()
+                env = cast("VirtualEnv", env)
+                shell = Shell.get()
+                shell.activate(env)
+
             return 0
 
         self.line(f"Spawning shell within <info>{self.env.path}</>")
