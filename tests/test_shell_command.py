@@ -35,7 +35,9 @@ def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
 
 
 def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> None:
+    assert isinstance(tester.command, ShellCommand)
     os.environ["POETRY_ACTIVE"] = "1"
+    os.environ["VIRTUAL_ENV"] = str(tester.command.env.path)
     shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
 
     tester.execute()
