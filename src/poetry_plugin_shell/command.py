@@ -36,11 +36,19 @@ If a virtual environment does not exist, it will be created.
 
             return 0
 
-        self.line(f"Spawning shell within <info>{self.env.path}</>")
-
         # Be sure that we have the right type of environment.
         env = self.env
-        assert env.is_venv()
+        if not env.is_venv():
+            self.line_error(
+                "<error>Poetry could not find a virtual environment to activate.</>\n"
+                "If <info>virtualenvs.create</> is set to <comment>false</>, "
+                "enable virtual environment creation or create/select a virtual "
+                "environment before running <info>poetry shell</>."
+            )
+            return 1
+
+        self.line(f"Spawning shell within <info>{self.env.path}</>")
+
         env = cast("VirtualEnv", env)
 
         # Setting this to avoid spawning unnecessary nested shells
