@@ -35,7 +35,9 @@ def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
 
 
 def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> None:
+    assert isinstance(tester.command, ShellCommand)
     os.environ["POETRY_ACTIVE"] = "1"
+    os.environ["VIRTUAL_ENV"] = str(tester.command.env.path)
     shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
 
     tester.execute()
@@ -46,6 +48,23 @@ def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> N
     )
 
     shell_activate.assert_not_called()
+    assert tester.io.fetch_output() == expected_output
+    assert tester.status_code == 0
+
+
+def test_shell_stale_poetry_active(
+    tester: CommandTester, mocker: MockerFixture
+) -> None:
+    assert isinstance(tester.command, ShellCommand)
+    os.environ["POETRY_ACTIVE"] = "1"
+    shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
+
+    tester.execute()
+
+    assert isinstance(tester.command, ShellCommand)
+    expected_output = f"Spawning shell within {tester.command.env.path}\n"
+
+    shell_activate.assert_called_once_with(tester.command.env)
     assert tester.io.fetch_output() == expected_output
     assert tester.status_code == 0
 
