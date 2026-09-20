@@ -30,6 +30,7 @@ from tests.helpers import isolated_environment
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from collections.abc import Sequence
 
     from poetry.installation.executor import Executor
     from poetry.poetry import Poetry
@@ -41,7 +42,7 @@ if TYPE_CHECKING:
 
 
 class Config(BaseConfig):
-    def get(self, setting_name: str, default: Any = None) -> Any:
+    def get(self, setting_name: str | Sequence[str], default: Any = None) -> Any:
         self.merge(self._config_source.config)  # type: ignore[attr-defined]
         self.merge(self._auth_config_source.config)  # type: ignore[attr-defined]
 
