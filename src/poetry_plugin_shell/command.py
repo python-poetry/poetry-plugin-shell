@@ -46,10 +46,10 @@ If a virtual environment does not exist, it will be created.
         # Setting this to avoid spawning unnecessary nested shells
         os.environ["POETRY_ACTIVE"] = "1"
         shell = Shell.get()
-        shell.activate(env)
+        exit_code = shell.activate(env)
         os.environ.pop("POETRY_ACTIVE")
 
-        return 0
+        return exit_code or 0
 
     def _is_venv_activated(self) -> bool:
         return bool(os.environ.get("POETRY_ACTIVE")) or getattr(
