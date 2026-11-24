@@ -22,8 +22,19 @@ def tester(command_tester_factory: CommandTesterFactory) -> CommandTester:
     return command_tester_factory("shell")
 
 
-def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
-    shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
+@pytest.mark.parametrize(
+    ("shell_exit_code", "expected_status_code"),
+    [(None, 0), (0, 0), (3, 3)],
+)
+def test_shell(
+    tester: CommandTester,
+    mocker: MockerFixture,
+    shell_exit_code: int | None,
+    expected_status_code: int,
+) -> None:
+    shell_activate = mocker.patch(
+        "poetry_plugin_shell.shell.Shell.activate", return_value=shell_exit_code
+    )
 
     tester.execute()
     assert isinstance(tester.command, ShellCommand)
@@ -31,7 +42,7 @@ def test_shell(tester: CommandTester, mocker: MockerFixture) -> None:
 
     shell_activate.assert_called_once_with(tester.command.env)
     assert tester.io.fetch_output() == expected_output
-    assert tester.status_code == 0
+    assert tester.status_code == expected_status_code
 
 
 def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> None:
