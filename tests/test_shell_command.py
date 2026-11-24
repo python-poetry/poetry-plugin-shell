@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from poetry.utils.env import MockEnv
+
 from poetry_plugin_shell.command import ShellCommand
 
 
@@ -48,6 +50,25 @@ def test_shell_already_active(tester: CommandTester, mocker: MockerFixture) -> N
     shell_activate.assert_not_called()
     assert tester.io.fetch_output() == expected_output
     assert tester.status_code == 0
+
+
+def test_shell_without_virtualenv_shows_error(
+    command_tester_factory: CommandTesterFactory,
+    mocker: MockerFixture,
+    tmp_path: Path,
+) -> None:
+    env = MockEnv(path=tmp_path / "system", is_venv=False)
+    tester = command_tester_factory("shell", environment=env)
+    shell_activate = mocker.patch("poetry_plugin_shell.shell.Shell.activate")
+
+    tester.execute()
+
+    error = tester.io.fetch_error()
+    shell_activate.assert_not_called()
+    assert "Spawning shell" not in tester.io.fetch_output()
+    assert "could not find a virtual environment" in error
+    assert "virtualenvs.create" in error
+    assert tester.status_code == 1
 
 
 @pytest.mark.parametrize(
