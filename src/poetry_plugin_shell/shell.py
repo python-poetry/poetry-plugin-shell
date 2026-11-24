@@ -90,7 +90,7 @@ class Shell:
                 args = ["/K", str(activate_path)]
 
             if args:
-                completed_proc = subprocess.run([self.path, *args])
+                completed_proc = subprocess.run([self.path, *args], check=False)
                 return completed_proc.returncode
             else:
                 # If no args are set, execute the shell within the venv
